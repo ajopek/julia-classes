@@ -27,17 +27,14 @@ mutable struct Address <: NodeType
   streetNumber
 end
 
-
-# Number of graph nodes.
 N = 800
 
-# Number of graph edges.
 K = 10000
 
 
 #= Generates random directed graph of size N with K edges
 and returns its adjacency matrix.=#
-function generate_random_graph()
+function generate_random_graph(N :: Int64, K :: Int64)
     A = Array{Int64,2}(N, N)
 
     for i=1:N, j=1:N
@@ -63,7 +60,7 @@ function get_random_address()
 end
 
 # Generates N random nodes (of random NodeType).
-function generate_random_nodes()
+function generate_random_nodes(N :: Int64)
   nodes = Vector()
   for i= 1:N
     push!(nodes, rand() > 0.5 ? get_random_person() : get_random_address())
@@ -73,7 +70,7 @@ end
 
 #= Converts given adjacency matrix (NxN)
   into list of graph vertices (of type GraphVertex and length N). =#
-function convert_to_graph(A, nodes)
+function convert_to_graph(A, nodes, N::Int64)
   N = length(nodes)
   push!(graph, map(n -> GraphVertex(n, GraphVertex[]), nodes)...)
 
@@ -159,14 +156,20 @@ function test_graph()
   for i=1:100
     global graph = GraphVertex[]
 
-    A = generate_random_graph()
-    nodes = generate_random_nodes()
-    convert_to_graph(A, nodes)
+    const N = 800
+    const K = 10000
+
+    A = generate_random_graph(N, K)
+    nodes = generate_random_nodes(N)
+    convert_to_graph(A, nodes, N)
 
     str = graph_to_str()
-    # println(str)
-    println(check_euler())
+    #println(str)
+    #println(check_euler())
+    check_euler()
   end
 end
+
+@time Graphs.test_graph()
 
 end
