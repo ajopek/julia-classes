@@ -24,12 +24,12 @@ mutable struct Person <: NodeType
 end
 
 mutable struct Address <: NodeType
-  streetNumber
+  streetNumber :: Int64
 end
 
-N = 800
+#N = 800
 
-K = 10000
+#K = 10000
 
 
 #= Generates random directed graph of size N with K edges
@@ -67,8 +67,8 @@ end
 
 #= Converts given adjacency matrix (NxN)
   into list of graph vertices (of type GraphVertex and length N). =#
-function convert_to_graph(A, nodes, N::Int64)
-  N = length(nodes)
+function convert_to_graph(A :: Array{Int64,2}, nodes, N::Int64, graph :: Array{GraphVertex, 1})
+  N :: Int64 = length(nodes)
   push!(graph, map(n -> GraphVertex(n, GraphVertex[]), nodes)...)
 
   for i = 1:N, j = 1:N
@@ -80,7 +80,7 @@ end
 
 #= Groups graph nodes into connected parts. E.g. if entire graph is connected,
   result list will contain only one part with all nodes. =#
-function partition()
+function partition(graph :: Array{GraphVertex, 1})
   parts = []
   remaining = Set(graph)
   visited = bfs(remaining=remaining)
@@ -120,8 +120,8 @@ end
 
 #= Checks if there's Euler cycle in the graph by investigating
    connectivity condition and evaluating if every vertex has even degree =#
-function check_euler()
-  if length(partition()) == 1
+function check_euler(graph::Array{GraphVertex, 1})
+  if length(partition(graph)) == 1
     return all(map(v -> iseven(length(v.neighbors)), graph))
   end
     "Graph is not connected"
@@ -129,7 +129,7 @@ end
 
 #= Returns text representation of the graph consisiting of each node's value
    text and number of its neighbors. =#
-function graph_to_str()
+function graph_to_str(graph::Array{GraphVertex, 1})
   graph_str = ""
   for v in graph
     graph_str *= "****\n"
@@ -151,19 +151,19 @@ end
   and creating text representation. =#
 function test_graph()
   for i=1:100
-    global graph = GraphVertex[]
+    graph = GraphVertex[]
 
     const N = 800
     const K = 10000
 
     A = generate_random_graph(N, K)
     nodes = generate_random_nodes(N)
-    convert_to_graph(A, nodes, N)
+    convert_to_graph(A, nodes, N, graph)
 
-    str = graph_to_str()
+    str = graph_to_str(graph)
     #println(str)
     #println(check_euler())
-    check_euler()
+    check_euler(graph)
   end
 end
 
