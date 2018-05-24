@@ -1,0 +1,11 @@
+Basic version:
+ 9.131423 seconds (122.89 M allocations: 6.583 GiB, 12.59% gc time)
+N and K to local:
+ 2.356456 seconds (5.83 M allocations: 3.810 GiB, 13.90% gc time)
+Vectorize Arrays operations:
+ 2.208107 seconds (5.83 M allocations: 3.808 GiB, 14.38% gc time)
+Remove global graph and add type annotations:
+ 2.092174 seconds (4.19 M allocations: 3.781 GiB, 17.66% gc time)
+Unmutable structs:
+ 2.237638 seconds (4.18 M allocations: 3.781 GiB, 16.23% gc time)
+
