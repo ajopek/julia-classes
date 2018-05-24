@@ -36,10 +36,7 @@ K = 10000
 and returns its adjacency matrix.=#
 function generate_random_graph(N :: Int64, K :: Int64)
     A = Array{Int64,2}(N, N)
-
-    for i=1:N, j=1:N
-      A[i,j] = 0
-    end
+    A[:,:] = 0
 
     for i in sample(1:N*N, K, replace=false)
       row, col = ind2sub(size(A), i)
