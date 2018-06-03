@@ -21,13 +21,13 @@ function solve_and_generate_out(exp_id :: String, initialVals, p)
     
     # Create and solve the problem
     problem = ODEProblem(lv, initialVals, tspan, p)
-    sol = solve(problem)
+    sol = solve(problem, RK4(), dt=0.01)
 
     # Create dataframe of problem 1 solution for predators and preys
-    df1 = DataFrame(t=sol.t, x = map(x -> x[1], sol.u), y = map(x -> x[2], sol.u))
+    df1 = DataFrame(t=sol.t, x=map(x -> x[1], sol.u), y=map(x -> x[2], sol.u), u = sol.u)
     df1[:exp_id] = exp_id
 
-    CSV.write(exp_id * ".csv", df1)
+    writetable(exp_id * ".csv", df1)
 end    
 
 function solve_for_each(path :: String)
