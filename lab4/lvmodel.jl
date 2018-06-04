@@ -3,7 +3,7 @@ using DataFrames
 using DifferentialEquations
 using CSV
 
-tspan = (0.0, 50.0) # Time span for solution  
+tspan = (0.0, 20.0) # Time span for solution  
 
 
 # Lotka-Volterra model function
