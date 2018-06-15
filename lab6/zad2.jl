@@ -13,20 +13,20 @@ end
 
 #################### CONSUMER #############################
 
-function consumer(c_names :: Channel, c_linenum :: Channel)
+function consumer(c_names :: Channel, c_linenum :: Channel, proc_num :: Int64)
     for filename in c_names
-        println(file)
         file = open(filename)
         lines_num = countlines(file)
+        println("$proc_num - " * filename * "- $lines_num")
         close(file)
         put!(c_linenum, lines_num)
     end
-    
 end
 
 #################### MAIN #############################
 
 function main(pathname :: String, consumers_no :: Int64)
+    global lines_num_end = 0;
     oldpwd :: String = pwd() 
     cd(pathname)
     # File names
@@ -37,10 +37,15 @@ function main(pathname :: String, consumers_no :: Int64)
     c_linenum = Channel{Int64}(64)
 
     # Spawn tasks
-    @async producer(c_names)
-    for i=1:consumers_no
-        @async consumer(c_names, c_linenum)
-    end    
+    @sync begin
+        @async producer(c_names)
+        for i=1:consumers_no
+            @async consumer(c_names, c_linenum, i)
+        end    
+    end
+
+    cd(oldpwd)
+    close(c_linenum)
 
     # Reduce all consumer outputs to a sum
     linenum :: Int64 = 0
@@ -48,7 +53,6 @@ function main(pathname :: String, consumers_no :: Int64)
         linenum += i
     end
 
-    close(c_linenum)
-    cd(pwd)
+    
     return linenum
 end
